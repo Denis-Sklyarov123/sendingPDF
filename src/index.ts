@@ -20,8 +20,6 @@ import {
 import type { IPatient } from "./types/interfaces/responseData";
 import { sendEmail } from "./executors/sendEmail";
 
-logger.info("process.args", process.argv); // bun index.ts ID The value of the ID field of the required patient
-
 const main = async () => {
   logger.info("starting...");
 
@@ -42,32 +40,32 @@ const main = async () => {
       const patientData = await execGetQuery<IPatient[]>(queryGetPatientData);
       const patient = patientData[0];
 
-      const queryCreateAttachments: IRequestPost = makeCreateAttachmentsQuery(
-        files,
-        patient._id
-      );
+      // const queryCreateAttachments: IRequestPost = makeCreateAttachmentsQuery(
+      //   files,
+      //   patient._id
+      // );
 
-      await execPostQuery(queryCreateAttachments);
+      // await execPostQuery(queryCreateAttachments);
 
-      await savePDFOnServer(files);
+      // await savePDFOnServer(files);
 
-      const emailAttachments: IEmailAttachment[] = makeEmailAttachments(files);
+      // const emailAttachments: IEmailAttachment[] = makeEmailAttachments(files);
 
-      const file = files[0];
+      // const file = files[0];
 
-      const sendEmailParams = {
-        patientId: patient._id,
-        fileName: file.fileName,
-        from: patient.emailFrom,
-        host: patient.host,
-        to: patient.emailTo,
-        pass: patient.password,
-        userName: patient.userName,
-        port: patient.port,
-        attachments: emailAttachments,
-      };
+      // const sendEmailParams = {
+      //   patientId: patient._id,
+      //   fileName: file.fileName,
+      //   from: patient.emailFrom,
+      //   host: patient.host,
+      //   to: patient.emailTo,
+      //   pass: patient.password,
+      //   userName: patient.userName,
+      //   port: patient.port,
+      //   attachments: emailAttachments,
+      // };
 
-      await sendEmail(sendEmailParams);
+      // await sendEmail(sendEmailParams);
     }
     logger.info("finished");
     process.exit(0);

@@ -1,0 +1,10 @@
+{"0":"/home/progforce/.bun/bin/bun","1":"/home/progforce/workSpace/Projects/grainjs-projects/sendingPDF/src/index.ts","2":"1000002","level":"info","message":"process.args"}
+{"level":"info","message":"starting..."}
+{"level":"info","message":"login process..."}
+{"level":"info","message":"getting list of PDF..."}
+{"level":"info","message":"grouping by CsId and Prefix..."}
+{"level":"info","message":"files to attach:"}
+{"level":"info","message":"execGetQuery success: "}
+{"level":"info","message":"execGetQuery success: "}
+{"level":"info","message":"execGetQuery success: "}
+{"level":"info","message":"finished"}
