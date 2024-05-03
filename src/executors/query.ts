@@ -58,9 +58,8 @@ export const makeCreateAttachmentsQuery = (
   return makePostRequestBody(queries);
 };
 
-export const makeGetClientServiceQuery = (csId: string): RequestGet => {
+export const makeGetPatientQuery = (csId: string): RequestGet => {
   const requestData: IQueryGet = getClientService(csId); // The value of the ID field of the required patient
-  // console.log("requestData", requestData);
 
   return makeGetRequestBody(requestData);
 };

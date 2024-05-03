@@ -1,6 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { ObjectId } from "mongodb";
+import dotenv from "dotenv";
+import { takeCsId } from "../helpers/takeCsId";
+import { generateUniqString } from "../helpers/generateUniqString";
+import { logger } from "../utils/loggerConfig";
 
 import { PathTypesPrfx } from "../types/enums/prefixes";
 import type {
@@ -8,35 +12,17 @@ import type {
   IEmailAttachment,
 } from "../types/interfaces/fileContent";
 
-const takeCsId = (fileName: string): number => {
-  const csId = fileName.split(/[._]/)[1];
-
-  return Number(csId);
-};
-
-const generateUniqString = (): string => {
-  const currentDate = new Date();
-
-  const { year, month, day, hours, minutes, seconds, milliseconds } = {
-    year: currentDate.getFullYear(),
-    month: (currentDate.getMonth() + 1).toString().padStart(2, "0"),
-    day: currentDate.getDate().toString().padStart(2, "0"),
-    hours: currentDate.getHours().toString().padStart(2, "0"),
-    minutes: currentDate.getMinutes().toString().padStart(2, "0"),
-    seconds: currentDate.getSeconds().toString().padStart(2, "0"),
-    milliseconds: currentDate.getMilliseconds().toString().padStart(3, "0"),
-  };
-
-  return `${day}${month}${year}${hours}${minutes}${seconds}${milliseconds}`;
-};
+dotenv.config({
+  path: "/home/progforce/workSpace/Projects/grainjs-projects/sendingPDF/.env",
+});
 
 export const takeListPDF = (): FileContent[] => {
   try {
-    console.log("getting list of PDF...");
+    logger.info("getting list of PDF...");
     let result: FileContent[] = [];
 
     const mainFolders = {
-      origin: "/home/progforce/workSpace/test123" as string,
+      origin: process.env.ORIGIN_FOLDER as string,
       prefixes: Object.keys(PathTypesPrfx) as Array<keyof typeof PathTypesPrfx>,
     };
 
@@ -68,6 +54,7 @@ export const takeListPDF = (): FileContent[] => {
 
     return result;
   } catch (err: any) {
+    logger.error(`Error getting list of PDF: ${err.message} at ${err.stack}`);
     throw new Error(
       `Error getting list of PDF: ${err.message} at ${err.stack}`
     );
@@ -75,7 +62,7 @@ export const takeListPDF = (): FileContent[] => {
 };
 
 export const groupByCsId = (list: FileContent[]): FileContent[][] => {
-  console.log("grouping by CsId and Prefix...");
+  logger.info("grouping by CsId and Prefix...");
 
   const result: FileContent[][] = [];
 
@@ -95,7 +82,7 @@ export const groupByCsId = (list: FileContent[]): FileContent[][] => {
 export const makeEmailAttachments = (
   files: FileContent[]
 ): IEmailAttachment[] => {
-  console.log("making email attachments...");
+  logger.info("making email attachments...");
 
   const result: IEmailAttachment[] = [];
 

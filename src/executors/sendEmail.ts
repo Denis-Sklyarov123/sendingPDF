@@ -1,7 +1,8 @@
 import nodemailer from "nodemailer";
+import { logger } from "../utils/loggerConfig";
 
 export const sendEmail = async (emailObj: Record<string, any>) => {
-  console.log("sending email...");
+  logger.info("sending email...");
   const transportOptions = {
     host: emailObj.host,
     port: emailObj.port,
@@ -19,7 +20,6 @@ export const sendEmail = async (emailObj: Record<string, any>) => {
       from: emailObj.from,
       to: emailObj.to,
       subject: "Adding an attachment to a patient ID: " + emailObj.patientId,
-      //   html: emailObj.body,
       text:
         "The file " +
         emailObj.fileName +
@@ -30,8 +30,6 @@ export const sendEmail = async (emailObj: Record<string, any>) => {
 
     return response;
   } catch (err: any) {
-    console.error(
-      `Send email failed with error ${err.message} at ${err.stack}`
-    );
+    logger.error(`Send email failed with error ${err.message} at ${err.stack}`);
   }
 };

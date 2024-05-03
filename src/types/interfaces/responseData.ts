@@ -1,4 +1,4 @@
-export interface IClientService {
+export interface IPatient {
   _id: string;
   firstName: string;
   lastName: string;

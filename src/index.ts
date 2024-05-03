@@ -1,4 +1,4 @@
-import { login, loginAxios } from "./executors/login";
+import { loginAxios } from "./executors/login";
 import {
   takeListPDF,
   groupByCsId,
@@ -6,6 +6,7 @@ import {
 } from "./executors/file";
 import { savePDFOnServer as savePDFOnServer } from "./executors/savePDFOnServer";
 import { execGetQuery, execPostQuery } from "./executors/request";
+import { logger } from "./utils/loggerConfig";
 
 import type {
   FileContent,
@@ -14,15 +15,15 @@ import type {
 import type { IRequestPost, RequestGet } from "./types/interfaces/request";
 import {
   makeCreateAttachmentsQuery,
-  makeGetClientServiceQuery,
+  makeGetPatientQuery,
 } from "./executors/query";
-import type { IClientService } from "./types/interfaces/responseData";
-import { savePDFInDB } from "./executors/savePDFInDB";
-import { password } from "bun";
+import type { IPatient } from "./types/interfaces/responseData";
 import { sendEmail } from "./executors/sendEmail";
 
+logger.info("process.args", process.argv); // bun index.ts ID The value of the ID field of the required patient
+
 const main = async () => {
-  console.log("starting...");
+  logger.info("starting...");
 
   try {
     await loginAxios();
@@ -33,20 +34,13 @@ const main = async () => {
     }
 
     const groupedFileList: FileContent[][] = groupByCsId(fileList);
-    console.log("files to attach:");
+    logger.info("files to attach:");
 
     for (const files of groupedFileList) {
-      // console.log("files ! ! ! ! !", files);
-
-      const patientId = "1000002"; // The value of the ID field of the required patient
-      const queryGetPatientData: RequestGet =
-        makeGetClientServiceQuery(patientId);
-      const patientData = await execGetQuery<IClientService[]>(
-        queryGetPatientData
-      );
+      const patientId = process.argv[2];
+      const queryGetPatientData: RequestGet = makeGetPatientQuery(patientId);
+      const patientData = await execGetQuery<IPatient[]>(queryGetPatientData);
       const patient = patientData[0];
-
-      // console.log("patient", patient);
 
       const queryCreateAttachments: IRequestPost = makeCreateAttachmentsQuery(
         files,
@@ -75,10 +69,10 @@ const main = async () => {
 
       await sendEmail(sendEmailParams);
     }
-    console.log("finished");
+    logger.info("finished");
     process.exit(0);
   } catch (err: any) {
-    console.error(err.message);
+    logger.error(err.message);
     process.exit(1);
   }
 };
